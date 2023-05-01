@@ -140,6 +140,14 @@
                             ejecuta( $query );
                             
                             echo '<div class="alert alert-success">La subtipología ha sido eliminada correctamente.</div>';
+                        }elseif($wact == 'del_doctype'){
+                            $doc = $_GET['doc'];
+                            $id = $_GET['id'];
+
+                            $query = "DELETE FROM `doc_type` WHERE `FK_SUBTYPE` = '".$id."' AND `DOC` = '".$doc."' ;";
+                            ejecuta( $query );
+
+                            echo '<div class="alert alert-success">El requisito de documentacion ha sido eliminada correctamente.</div>';
                         }
 								
                         // VARIABLES para DOC_TYPE
@@ -159,7 +167,6 @@
                         // Mostramos formulario
 						if ( $wact == 'add' || $wact == 'edit' ){
                             
-
 							if ( $wact == 'edit' ){
 							
 								$query = "SELECT * FROM INCIDENT_SUBTYPE WHERE ID = '".$wid."' AND STATUS = 'A'";
@@ -283,6 +290,14 @@
                                             <small id="help" class="form-text text-muted">Debes de introducir un titulo para identificar la imagen.</small>
                                             <label for="doc2-textarea">Descripción a aportar en incidencia para imagen</label>
                                             <textarea class="form-control"  name="doc2-textarea" id="doc2-textarea" cols="20"><?php echo $doc2['description'];?></textarea>
+                                            <?php 
+                                                if($wact == "edit" && $doc2['title'] != ""){
+                                                    echo "<hr><label>Otras opciones:</label>";
+                                                    echo '<a href="javascript:void(0)" onclick="if ( confirm(\''.htmlentities('¿').'Seguro que desea eliminar el aporte de imagen?\') ) window.open(\''.action('','op=admin_subtipologia&act=del_doctype&doc=2&id='.$row_user['ID']).'\', \'_self\');">
+                                                    <button type="button" class="btn btn-danger"><i class="fa fa-trash"></i> Eliminar imagen</button>
+                                                    </a>';
+                                                }
+                                            ?>
                                         </div>
                                     </div>
                                     <div class="collapse" id="doc3">
@@ -292,6 +307,14 @@
                                             <small id="help" class="form-text text-muted">Debes de introducir un titulo para identificar el documento.</small>
                                             <label for="doc3-textarea">Descripción a aportar en incidencia para documento</label>
                                             <textarea class="form-control"  name="doc3-textarea" id="doc3-textarea" cols="20"><?php echo $doc3['description'];?></textarea>
+                                            <?php 
+                                                if($wact == "edit" && $doc3['title'] != ""){
+                                                    echo "<hr><label>Otras opciones:</label>";
+                                                    echo '<a href="javascript:void(0)" onclick="if ( confirm(\''.htmlentities('¿').'Seguro que desea eliminar el aporte de documento?\') ) window.open(\''.action('','op=admin_subtipologia&act=del_doctype&doc=3&id='.$row_user['ID']).'\', \'_self\');">
+                                                    <button type="button" class="btn btn-danger"><i class="fa fa-trash"></i> Eliminar documento</button>
+                                                    </a>';
+                                                }
+                                            ?>
                                         </div>
                                     </div>
                                 </div>
