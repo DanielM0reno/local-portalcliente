@@ -54,7 +54,10 @@
                                     VALUES ( '2', '".  $id_subtype."', 'IMAGE', '".$doc2_input."', '".$doc2_textarea."');";
                                     ejecuta( $query );  
 
-                                } elseif(!empty($_POST["doc3-input"])) {   // DOCUMENTACION para DOCUMENTOS (DOC-3)
+                                } 
+
+                                // DOCUMENTACION para DOCUMENTOS (DOC-3)
+                                if(!empty($_POST["doc3-input"])) {   
                                     $doc3_input = $_POST['doc3-input'];
                                     $doc3_textarea = $_POST['doc3-textarea'];
 
@@ -74,7 +77,57 @@
                                 $query = "UPDATE INCIDENT_SUBTYPE SET `NAME` = '".$name."', `FK_TYPE` = '".$tipologia."'  WHERE `ID` = '".$id."' ;";
                                 $res = ejecuta( $query );	
 
-                                $query2 = "SELECT `DOC` FROM `doc_type` WHERE FK_SUBTYPE = 10;";
+                                // Se comprueba que DOC-TYPE se actualiza y cuales se insertan
+                                $query2 = "SELECT `DOC` FROM `doc_type` WHERE FK_SUBTYPE = ".$id.";";
+                                $res2 = ejecuta( $query2 );
+
+                                $listado_update = array();
+
+                                while ( $row = $res2->fetch_assoc())
+                                {
+                                    if($row['DOC'] == '1'){
+                                        $query = "UPDATE `portalcliente_dev`.`doc_type` SET `DOCITEM_TITLE` = '".$_POST['doc1-input']."',
+                                        `DOCITEM_DESCRIPTION` = '".$_POST['doc1-textarea']."' WHERE `FK_SUBTYPE` = '".$id."' AND `DOC` = 1;";
+                                        ejecuta( $query );  
+
+                                    }elseif ($row['DOC'] == '2'){
+                                        $query = "UPDATE `portalcliente_dev`.`doc_type` SET `DOCITEM_TITLE` = '".$_POST['doc2-input']."',
+                                        `DOCITEM_DESCRIPTION` = '".$_POST['doc2-textarea']."' WHERE `FK_SUBTYPE` = '".$id."' AND `DOC` = 2;";
+                                        ejecuta( $query );  
+                                        array_push($listado_update, "2");
+                                        
+                                    }elseif ($row['DOC'] == '3'){
+                                        $query = "UPDATE `portalcliente_dev`.`doc_type` SET `DOCITEM_TITLE` = '".$_POST['doc3-input']."',
+                                        `DOCITEM_DESCRIPTION` = '".$_POST['doc3-textarea']."' WHERE `FK_SUBTYPE` = '".$id."' AND `DOC` = 3;";
+                                        ejecuta( $query );  
+                                        array_push($listado_update, "3");
+                                    }
+                                }
+
+                                // Compruebo cuales tengo que insertar
+                                if(!in_array("2", $listado_update)){
+                                    if (!empty($_POST["doc2-input"])) {
+                                        $doc2_input = $_POST['doc2-input'];
+                                        $doc2_textarea = $_POST['doc2-textarea'];
+    
+                                        $query = "INSERT INTO `portalcliente_dev`.`doc_type` 
+                                        (`DOC`,`FK_SUBTYPE`, `DOCITEM_TYPE`, `DOCITEM_TITLE`, `DOCITEM_DESCRIPTION`)
+                                        VALUES ( '2', '".  $id."', 'IMAGE', '".$doc2_input."', '".$doc2_textarea."');";
+                                        ejecuta( $query );  
+                                    } 
+                                }
+
+                                if(!in_array("3", $listado_update)){
+                                    if(!empty($_POST["doc3-input"])) {   
+                                        $doc3_input = $_POST['doc3-input'];
+                                        $doc3_textarea = $_POST['doc3-textarea'];
+
+                                        $query = "INSERT INTO `portalcliente_dev`.`doc_type` 
+                                        (`DOC`,`FK_SUBTYPE`, `DOCITEM_TYPE`, `DOCITEM_TITLE`, `DOCITEM_DESCRIPTION`)
+                                        VALUES ( '3', '".  $id."', 'DOCUMENT', '".$doc3_input."', '".$doc3_textarea."');";
+                                        ejecuta( $query );  
+                                    }
+                                }
 
                                 echo '<div class="alert alert-success">La subtipología se ha modificado correctamente.</div>';
                             }
@@ -148,8 +201,8 @@
                                                 <label for="">Seleccione tipología: </label>
 
                                                     <!-- Selector de tipologia -->
-                                                    <select class="form-control w-50 " name="tipologia" id="sel_tipologia">
-                                                        <option disabled selected>Selecciona una opción</option>
+                                                    <select class="form-control w-50 " name="tipologia" id="sel_tipologia" required>
+                                                        <option value="" disabled selected>Selecciona una opción</option>
                                                     <?php
                                                             $value = 0;
                                                             if(!empty($wid)){
