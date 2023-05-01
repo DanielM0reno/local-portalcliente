@@ -32,16 +32,50 @@
                                 $tipologia = $_POST['tipologia'];
 
                                 $query = "INSERT INTO `INCIDENT_SUBTYPE` (`NAME`,`FK_TYPE`,`STATUS`)  VALUES ('".$name."','".$tipologia."','A');";
-                                ejecuta( $query );                    
+                                ejecuta( $query );    
+
+                                $id_subtype = insert_id();
+                                
+                                $doc1_input = $_POST['doc1-input'];
+                                $doc1_textarea = $_POST['doc1-textarea'];
+
+                                $query = "INSERT INTO `portalcliente_dev`.`doc_type` 
+                                (`DOC`,`FK_SUBTYPE`, `DOCITEM_TYPE`, `DOCITEM_TITLE`, `DOCITEM_DESCRIPTION`)
+                                VALUES ( '1', '".  $id_subtype."', 'TEXT', '".$doc1_input."', '".$doc1_textarea."');";
+                                ejecuta( $query );  
+
+                                // DOCUMENTACION para Imagenes (DOC-2)
+                                if (!empty($_POST["doc2-input"])) {
+                                    $doc2_input = $_POST['doc2-input'];
+                                    $doc2_textarea = $_POST['doc2-textarea'];
+
+                                    $query = "INSERT INTO `portalcliente_dev`.`doc_type` 
+                                    (`DOC`,`FK_SUBTYPE`, `DOCITEM_TYPE`, `DOCITEM_TITLE`, `DOCITEM_DESCRIPTION`)
+                                    VALUES ( '2', '".  $id_subtype."', 'IMAGE', '".$doc2_input."', '".$doc2_textarea."');";
+                                    ejecuta( $query );  
+
+                                } elseif(!empty($_POST["doc3-input"])) {   // DOCUMENTACION para DOCUMENTOS (DOC-3)
+                                    $doc3_input = $_POST['doc3-input'];
+                                    $doc3_textarea = $_POST['doc3-textarea'];
+
+                                    $query = "INSERT INTO `portalcliente_dev`.`doc_type` 
+                                    (`DOC`,`FK_SUBTYPE`, `DOCITEM_TYPE`, `DOCITEM_TITLE`, `DOCITEM_DESCRIPTION`)
+                                    VALUES ( '3', '".  $id_subtype."', 'DOCUMENT', '".$doc3_input."', '".$doc3_textarea."');";
+                                    ejecuta( $query );  
+                                }
+                                
                                 echo '<div class="alert alert-success">La subtipología se ha dado de alta correctamente.</div>';
                             
                         }else{
                                 $id = $_POST['id'];
                                 $name = $_POST['nombre'];
                                 $tipologia = $_POST['tipologia'];
-
+                                
                                 $query = "UPDATE INCIDENT_SUBTYPE SET `NAME` = '".$name."', `FK_TYPE` = '".$tipologia."'  WHERE `ID` = '".$id."' ;";
                                 $res = ejecuta( $query );	
+
+                                $query2 = "SELECT `DOC` FROM `doc_type` WHERE FK_SUBTYPE = 10;";
+
                                 echo '<div class="alert alert-success">La subtipología se ha modificado correctamente.</div>';
                             }
                             
@@ -173,10 +207,10 @@
                                     <div class="card" id="doc1-form">
                                         <div class="card-body">
                                             <label for="doc1-textarea">TÍtulo para observaciones</label>
-                                            <input type="text" class="form-control" id="doc1-input"  value="<?php echo $doc1['title'];?>" required>
+                                            <input type="text" class="form-control" id="doc1-input" name="doc1-input" value="<?php echo $doc1['title'];?>" required>
                                             <small id="help" class="form-text text-muted">Debes de introducir un titulo para identificar el caso.</small>
                                             <label for="doc1-textarea">Descripción a aportar en incidencia</label>
-                                            <textarea class="form-control"  name="doc1" id="doc1-textarea" cols="20" required><?php echo $doc1['description'];?></textarea>
+                                            <textarea class="form-control"  name="doc1-textarea" id="doc1-textarea" cols="20" required><?php echo $doc1['description'];?></textarea>
                                         </div>
                                     </div>
                                     <hr>
@@ -192,19 +226,19 @@
                                     <div class="collapse" id="doc2">
                                         <div class="card card-body">
                                             <label for="doc2-input">TÍtulo para imagenes</label>
-                                            <input type="text" class="form-control" id="doc2-input" value="<?php echo $doc2['title'];?>">
+                                            <input type="text" class="form-control" id="doc2-input" name="doc2-input" value="<?php echo $doc2['title'];?>">
                                             <small id="help" class="form-text text-muted">Debes de introducir un titulo para identificar la imagen.</small>
                                             <label for="doc2-textarea">Descripción a aportar en incidencia para imagen</label>
-                                            <textarea class="form-control"  name="doc2" id="doc2-textarea" cols="20"><?php echo $doc2['description'];?></textarea>
+                                            <textarea class="form-control"  name="doc2-textarea" id="doc2-textarea" cols="20"><?php echo $doc2['description'];?></textarea>
                                         </div>
                                     </div>
                                     <div class="collapse" id="doc3">
                                         <div class="card card-body">
                                             <label for="doc3-input">TÍtulo para documento</label>
-                                            <input type="text" class="form-control" id="doc3-input" value="<?php echo $doc3['title'];?>">
+                                            <input type="text" class="form-control" id="doc3-input" name="doc3-input" value="<?php echo $doc3['title'];?>">
                                             <small id="help" class="form-text text-muted">Debes de introducir un titulo para identificar el documento.</small>
                                             <label for="doc3-textarea">Descripción a aportar en incidencia para documento</label>
-                                            <textarea class="form-control"  name="doc3" id="doc3-textarea" cols="20"><?php echo $doc3['description'];?></textarea>
+                                            <textarea class="form-control"  name="doc3-textarea" id="doc3-textarea" cols="20"><?php echo $doc3['description'];?></textarea>
                                         </div>
                                     </div>
                                 </div>
