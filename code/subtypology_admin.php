@@ -137,8 +137,47 @@
                                         </div>
                                     </div>
                                 </div> <!-- end col -->
-            
-                                
+                                                    
+                                <!-- Elementos a adjuntar / DocType  -->
+                                <div class="col-lg-6">
+                                    <div class="card" id="doc1-form">
+                                        <div class="card-body">
+                                            <label for="doc1-textarea">TÍtulo para observaciones</label>
+                                            <input type="text" class="form-control" id="doc1-input" placeholder="Introduce un titulo de asunto" required>
+                                            <small id="help" class="form-text text-muted">Debes de introducir un titulo para identificar el caso.</small>
+                                            <label for="doc1-textarea">Descripción a aportar en incidencia</label>
+                                            <textarea class="form-control"  name="doc1" id="doc1-textarea" cols="20" required></textarea>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <!-- Otra documentacion -->
+                                    <p class="text-center">
+                                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#doc2" aria-expanded="false" aria-controls="doc2">
+                                            Aportar imagen
+                                        </button>
+                                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#doc3" aria-expanded="false" aria-controls="doc3">
+                                            Aportar documento
+                                        </button>
+                                    </p>
+                                    <div class="collapse" id="doc2">
+                                        <div class="card card-body">
+                                            <label for="doc2-input">TÍtulo para imagenes</label>
+                                            <input type="text" class="form-control" id="doc2-input" placeholder="Introduce un titulo de imagen">
+                                            <small id="help" class="form-text text-muted">Debes de introducir un titulo para identificar la imagen.</small>
+                                            <label for="doc2-textarea">Descripción a aportar en incidencia para imagen</label>
+                                            <textarea class="form-control"  name="doc2" id="doc2-textarea" cols="20"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="collapse" id="doc3">
+                                        <div class="card card-body">
+                                            <label for="doc3-input">TÍtulo para documento</label>
+                                            <input type="text" class="form-control" id="doc3-input" placeholder="Introduce un titulo de documento">
+                                            <small id="help" class="form-text text-muted">Debes de introducir un titulo para identificar el documento.</small>
+                                            <label for="doc3-textarea">Descripción a aportar en incidencia para documento</label>
+                                            <textarea class="form-control"  name="doc3" id="doc3-textarea" cols="20"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
                             </div> <!-- end row -->
 
 					
