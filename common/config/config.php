@@ -10,8 +10,13 @@ $_config ['ext_allowed'] = array (
 
 
 
-	$_config ['db_user'] = 'portalcliente_dev';
-	$_config ['db_password'] = '@7z042eVs';
+	// $_config ['db_user'] = 'portalcliente_dev';
+	// $_config ['db_password'] = '@7z042eVs';
+	// $_config ['db_name'] = 'portalcliente_dev';
+	// $_config ['db_host'] = 'localhost';
+
+	$_config ['db_user'] = 'root';
+	$_config ['db_password'] = '';
 	$_config ['db_name'] = 'portalcliente_dev';
 	$_config ['db_host'] = 'localhost';
 

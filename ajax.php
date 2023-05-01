@@ -21,8 +21,8 @@ if (!$auth->is_logged() or $_GET['act'] == 'logout') {
 	exit ();
 }
 
-	$dbconn = pg_connect("host=serigrafiasergar.no-ip.org port=5432 dbname=i.SERIGRAFIA_SERGAR_SL.2019.0 user=inforgesconnectiqs password=ncxz@L934_PO234&xz23gh")
-    or die('No se ha podido conectar: ' . pg_last_error());
+	// $dbconn = pg_connect("host=serigrafiasergar.no-ip.org port=5432 dbname=i.SERIGRAFIA_SERGAR_SL.2019.0 user=inforgesconnectiqs password=ncxz@L934_PO234&xz23gh")
+    // or die('No se ha podido conectar: ' . pg_last_error());
 
 if ( $_POST['op'] == 'detalle_pedido' )
 {
