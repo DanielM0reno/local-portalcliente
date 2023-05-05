@@ -122,10 +122,12 @@
 
                                                             <!-- MESSAGE -->
                                                             <?php
-                                                                $query = "SELECT cm.ID_USER, cm.MESSAGE, cm.FECHA, cm.HORA 
+                                                                $query = "SELECT u.nombre, cm.MESSAGE, cm.FECHA, cm.HORA 
                                                                 FROM CHAT_MESSAGE cm 
                                                                 INNER JOIN CHAT_INCIDENT ci 
                                                                 ON ci.ID = cm.FK_CHAT 
+                                                                INNER JOIN USERS u
+                                                                ON u.id = cm.ID_USER
                                                                 WHERE ci.FK_INCIDENT ='".$id."';";
 
                                                                 $res_message = ejecuta( $query );	
@@ -135,7 +137,7 @@
                                                                 {
                                                                     echo '<div class="clearfix">
                                                                             <div class="header">
-                                                                                <strong class="primary-font">'.$row['ID_USER'].'</strong> <small class="pull-right text-muted">
+                                                                                <strong class="primary-font">'.$row['nombre'].'</strong> <small class="pull-right text-muted">
                                                                                 <i class="fa fa-clock-o" aria-hidden="true"></i>'.$row['HORA'].' - '.$row['FECHA'].'</small>
                                                                             </div>
                                                                             <p>'.$row['MESSAGE'].'</p>
