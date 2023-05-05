@@ -39,7 +39,7 @@
                                 $doc1_input = $_POST['doc1-input'];
                                 $doc1_textarea = $_POST['doc1-textarea'];
 
-                                $query = "INSERT INTO `portalcliente_dev`.`doc_type` 
+                                $query = "INSERT INTO `portalcliente_dev`.`DOC_TYPE` 
                                 (`DOC`,`FK_SUBTYPE`, `DOCITEM_TYPE`, `DOCITEM_TITLE`, `DOCITEM_DESCRIPTION`)
                                 VALUES ( '1', '".  $id_subtype."', 'TEXT', '".$doc1_input."', '".$doc1_textarea."');";
                                 ejecuta( $query );  
@@ -49,7 +49,7 @@
                                     $doc2_input = $_POST['doc2-input'];
                                     $doc2_textarea = $_POST['doc2-textarea'];
 
-                                    $query = "INSERT INTO `portalcliente_dev`.`doc_type` 
+                                    $query = "INSERT INTO `portalcliente_dev`.`DOC_TYPE` 
                                     (`DOC`,`FK_SUBTYPE`, `DOCITEM_TYPE`, `DOCITEM_TITLE`, `DOCITEM_DESCRIPTION`)
                                     VALUES ( '2', '".  $id_subtype."', 'IMAGE', '".$doc2_input."', '".$doc2_textarea."');";
                                     ejecuta( $query );  
@@ -61,7 +61,7 @@
                                     $doc3_input = $_POST['doc3-input'];
                                     $doc3_textarea = $_POST['doc3-textarea'];
 
-                                    $query = "INSERT INTO `portalcliente_dev`.`doc_type` 
+                                    $query = "INSERT INTO `portalcliente_dev`.`DOC_TYPE` 
                                     (`DOC`,`FK_SUBTYPE`, `DOCITEM_TYPE`, `DOCITEM_TITLE`, `DOCITEM_DESCRIPTION`)
                                     VALUES ( '3', '".  $id_subtype."', 'DOCUMENT', '".$doc3_input."', '".$doc3_textarea."');";
                                     ejecuta( $query );  
@@ -78,7 +78,7 @@
                                 $res = ejecuta( $query );	
 
                                 // Se comprueba que DOC-TYPE se actualiza y cuales se insertan
-                                $query2 = "SELECT `DOC` FROM `doc_type` WHERE FK_SUBTYPE = ".$id.";";
+                                $query2 = "SELECT `DOC` FROM `DOC_TYPE` WHERE FK_SUBTYPE = ".$id.";";
                                 $res2 = ejecuta( $query2 );
 
                                 $listado_update = array();
@@ -86,18 +86,18 @@
                                 while ( $row = $res2->fetch_assoc())
                                 {
                                     if($row['DOC'] == '1'){
-                                        $query = "UPDATE `portalcliente_dev`.`doc_type` SET `DOCITEM_TITLE` = '".$_POST['doc1-input']."',
+                                        $query = "UPDATE `portalcliente_dev`.`DOC_TYPE` SET `DOCITEM_TITLE` = '".$_POST['doc1-input']."',
                                         `DOCITEM_DESCRIPTION` = '".$_POST['doc1-textarea']."' WHERE `FK_SUBTYPE` = '".$id."' AND `DOC` = 1;";
                                         ejecuta( $query );  
 
                                     }elseif ($row['DOC'] == '2'){
-                                        $query = "UPDATE `portalcliente_dev`.`doc_type` SET `DOCITEM_TITLE` = '".$_POST['doc2-input']."',
+                                        $query = "UPDATE `portalcliente_dev`.`DOC_TYPE` SET `DOCITEM_TITLE` = '".$_POST['doc2-input']."',
                                         `DOCITEM_DESCRIPTION` = '".$_POST['doc2-textarea']."' WHERE `FK_SUBTYPE` = '".$id."' AND `DOC` = 2;";
                                         ejecuta( $query );  
                                         array_push($listado_update, "2");
                                         
                                     }elseif ($row['DOC'] == '3'){
-                                        $query = "UPDATE `portalcliente_dev`.`doc_type` SET `DOCITEM_TITLE` = '".$_POST['doc3-input']."',
+                                        $query = "UPDATE `portalcliente_dev`.`DOC_TYPE` SET `DOCITEM_TITLE` = '".$_POST['doc3-input']."',
                                         `DOCITEM_DESCRIPTION` = '".$_POST['doc3-textarea']."' WHERE `FK_SUBTYPE` = '".$id."' AND `DOC` = 3;";
                                         ejecuta( $query );  
                                         array_push($listado_update, "3");
@@ -110,7 +110,7 @@
                                         $doc2_input = $_POST['doc2-input'];
                                         $doc2_textarea = $_POST['doc2-textarea'];
     
-                                        $query = "INSERT INTO `portalcliente_dev`.`doc_type` 
+                                        $query = "INSERT INTO `portalcliente_dev`.`DOC_TYPE` 
                                         (`DOC`,`FK_SUBTYPE`, `DOCITEM_TYPE`, `DOCITEM_TITLE`, `DOCITEM_DESCRIPTION`)
                                         VALUES ( '2', '".  $id."', 'IMAGE', '".$doc2_input."', '".$doc2_textarea."');";
                                         ejecuta( $query );  
@@ -122,7 +122,7 @@
                                         $doc3_input = $_POST['doc3-input'];
                                         $doc3_textarea = $_POST['doc3-textarea'];
 
-                                        $query = "INSERT INTO `portalcliente_dev`.`doc_type` 
+                                        $query = "INSERT INTO `portalcliente_dev`.`DOC_TYPE` 
                                         (`DOC`,`FK_SUBTYPE`, `DOCITEM_TYPE`, `DOCITEM_TITLE`, `DOCITEM_DESCRIPTION`)
                                         VALUES ( '3', '".  $id."', 'DOCUMENT', '".$doc3_input."', '".$doc3_textarea."');";
                                         ejecuta( $query );  
@@ -144,7 +144,7 @@
                             $doc = $_GET['doc'];
                             $id = $_GET['id'];
 
-                            $query = "DELETE FROM `doc_type` WHERE `FK_SUBTYPE` = '".$id."' AND `DOC` = '".$doc."' ;";
+                            $query = "DELETE FROM `DOC_TYPE` WHERE `FK_SUBTYPE` = '".$id."' AND `DOC` = '".$doc."' ;";
                             ejecuta( $query );
 
                             echo '<div class="alert alert-success">El requisito de documentacion ha sido eliminada correctamente.</div>';
@@ -173,7 +173,7 @@
 								$res = ejecuta( $query );														
 								$row_user = $res->fetch_assoc();
 
-                                $query2 = "SELECT 	`DOC`, 	`DOCITEM_TITLE`, `DOCITEM_DESCRIPTION` FROM `doc_type` 
+                                $query2 = "SELECT 	`DOC`, 	`DOCITEM_TITLE`, `DOCITEM_DESCRIPTION` FROM `DOC_TYPE` 
                                 WHERE FK_SUBTYPE = ".$wid.";";
 								$res2 = ejecuta( $query2 );			
 
@@ -213,9 +213,9 @@
                                                     <?php
                                                             $value = 0;
                                                             if(!empty($wid)){
-                                                                $q2 = "SELECT `incident_type`.ID,`incident_type`.`NAME` FROM `incident_type` INNER JOIN `incident_subtype`
-                                                                ON `incident_type`.`ID` = `incident_subtype`.`FK_TYPE`
-                                                                WHERE `incident_type`.`STATUS` = 'A' AND `incident_subtype`.`ID` = ".$wid.";";
+                                                                $q2 = "SELECT `INCIDENT_TYPE`.ID,`INCIDENT_TYPE`.`NAME` FROM `INCIDENT_TYPE` INNER JOIN `INCIDENT_SUBTYPE`
+                                                                ON `INCIDENT_TYPE`.`ID` = `INCIDENT_SUBTYPE`.`FK_TYPE`
+                                                                WHERE `INCIDENT_TYPE`.`STATUS` = 'A' AND `INCIDENT_SUBTYPE`.`ID` = ".$wid.";";
                                                                 $res2 = ejecuta( $q2 );
                                                                 $select_tipologia = $res2->fetch_assoc();
                                                                 $value = $select_tipologia['ID'];

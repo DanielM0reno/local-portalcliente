@@ -151,7 +151,7 @@
                                         <!-- Modal VER DETALLER-->
 
                                         <div class="modal fade" id="modalVerDetalle" tabindex="-1" role="dialog" aria-labelledby="modalVerDetalle" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
                                                 <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="exampleModalLongTitle">Incidencia</h5>
@@ -232,10 +232,20 @@
                                                             echo "<td>".$row['ID']."</td>";
                                                             echo "<td>".$row['PRODUCTO']."</td>";
                                                             echo "<td>".$row['TIPOLOGIA']."</td>";
-                                                            echo "<td class='text-center'><span class='badge badge-success'>".$row['STATUS']."</span></td>";
+
+                                                            if ($row['STATUS'] == 'ABIERTO'){
+                                                                echo "<td class='text-center'><span class='badge badge-success'>".$row['STATUS']."</span></td>";
+                                                            }
+                                                            elseif ($row['STATUS'] == 'CERRADO'){
+                                                                echo "<td class='text-center'><span class='badge badge-danger'>".$row['STATUS']."</span></td>";
+                                                            }
+                                                            
                                                             echo "<td>
                                                             <button type='button' class='btn btn-default ver_incidente' data-toggle='modal' data-target='#modalVerDetalle' data-id='".$row['ID']."'><i class='fa fa-eye ver_detalle'></i></button>
-                                                            <button type='button' class='btn btn-danger'><i class='fa fa-download'></i> Seguimiento incidencia</button>
+                                                            
+                                                            <a href='".action('','op=trace_incident&id='.$row['ID'])."' class='btn btn-danger'>
+                                                            <i class='fa fa-download'></i> Seguimiento incidencia
+                                                            </a>
                                                             </td>";
                                                             echo "</tr>";
                                                         }

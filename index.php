@@ -277,6 +277,10 @@ if (!$auth->is_logged() or $_GET['act'] == 'logout') {
 							    require_once("code/subtypology_admin.php");
 							break;
 
+                            case 'trace_incident':
+							    require_once("view/rma/trace_incident.php");
+							break;
+
 							default:
 								require_once("code/dashboard.php");
 					}

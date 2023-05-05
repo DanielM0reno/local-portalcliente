@@ -190,6 +190,10 @@ else{
 				(FK_INCIDENT, FK_DOC) VALUES".$values .";";
 				$result = ejecuta($query) or die('La insercion INC_DOC fallo: ' . pg_last_error());
 
+				// -Nuevo chat
+				$query = "INSERT INTO CHAT_INCIDENT (FK_INCIDENT) VALUES(".$id_incidencia.");";
+				ejecuta($query);
+
 				echo "OK";
 			}else{
 				echo 'ERROR';
@@ -211,12 +215,8 @@ else{
 		$result = ejecuta($query) or die('La consulta fallo: ' . pg_last_error());
 
 		echo "<div class='row'>
-				<div class='col-lg-6'>
-					<h5>Información</h5>
 
-				</div>
-
-				<div class='col-lg-6'>
+				<div class='col-lg-12'>
 				<h5>Documentación</h5>";
 		while ( $row = $result->fetch_assoc())
 		{  
