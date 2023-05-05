@@ -58,7 +58,10 @@ else{
 	// Muestra los subtipos de incidencias
 	if( $_POST['op'] == 'subtype_incident' ){
 			
-			$query = 'SELECT ID, NAME FROM portalcliente_dev.INCIDENT_SUBTYPE WHERE FK_TYPE = '.$_POST['id_incident'].'; ';									
+			$query = 'SELECT i.ID, i.`NAME`
+			FROM INCIDENT_SUBTYPE i
+			WHERE (SELECT COUNT(*) FROM DOC_TYPE WHERE FK_SUBTYPE = i.ID) >0 AND FK_TYPE =  '.$_POST['id_incident'].'; ';	
+											
 			$result = ejecuta($query) or die('La consulta fallo: ' . pg_last_error());
 			echo '<option disabled selected>Selecciona una opción</option>';
 			while ( $row = $result->fetch_assoc())
@@ -80,16 +83,16 @@ else{
 			//Tipo de input a mostrar
 			switch ($row['DOC']) {
 				case '1':
-					echo "<textarea id ='".$row['ID']."' class='form-control' name='doc1' rows='4' style='resize: none'></textarea>";
-					echo "<input id ='".$row['ID']."' name='doc1_doctype' type='hidden' value='".$row['ID']."' >";
+					echo "<textarea id ='".$row['ID']."' class='form-control form_input' name='doc1-".$row['ID']."' rows='4' style='resize: none'></textarea>";
+					// echo "<input id ='".$row['ID']."' name='doc1_doctype' type='hidden' value='".$row['ID']."' >";
 
 					// echo "<input name='doc1' id ='".$row['ID']."' type='file' class='dropify form_input' data-height='90' data-allowed-file-extensions='pdf' />";
 					break;
 				case '2':
-					echo "<input name='doc2' id ='".$row['ID']."' type='file' class='dropify form_input' data-height='90' data-allowed-file-extensions='png jpeg jpg'/>";
+					echo "<input name='doc2-".$row['ID']."' id ='".$row['ID']."' type='file' class='dropify form_input' data-height='90' data-allowed-file-extensions='png jpeg jpg'/>";
 					break;
 				case '3':
-					echo "<input name='doc3' id ='".$row['ID']."' type='file' class='dropify form_input' data-height='90' />";
+					echo "<input name='doc3-".$row['ID']."' id ='".$row['ID']."' type='file' class='dropify form_input' data-height='90' />";
 					break;
 				default:
 					break;
@@ -104,41 +107,44 @@ else{
 		//Array de identificadores de los documentos subidos
 		$id_documents = array();
 		
+		//Extensiones validas para documentos
 		$valid_extensions = array('jpeg', 'jpg', 'png', 'pdf' , 'doc' ); // valid extensions
-		$uploaddir = 'uploads/'; 
+		$uploaddir = 'uploads/'; //directorio de ficheros
 		$file_upload = 0;
 
 		$incident_type = $_POST['incident_type'];
 		$id_doctype = $_POST['id_forminputs'];
-
-		// Insercion de textarea
-		if (!empty($_POST["doc1"])) {
-			$id = $_POST['doc1_doctype'];
-			$content = $_POST['doc1'];
-
-			//QUERY DATABASE
-			$query = "INSERT INTO DOCUMENTS_RMA 
-			(SECURE_TITLE, TITLE, EXTENSION, DOC_TYPE)
-			VALUES(substr(sha(UUID()) from 1 for 10), '".$content."', 'TEXT',".$id.");";
-			$result = ejecuta($query) or die('La insercion fallo: ' . pg_last_error()); 
-
-			array_push($id_documents,intval(insert_id())); //Guardo el id para luego
-		}
 		
-		// Insercion de documentos
-		if(count($_FILES) > 0)
-		{
+		foreach($id_doctype as $id){
+			
+			//Comprobamos DOC_TYPE
+			$query_doctype = "SELECT DOC FROM DOC_TYPE WHERE ID = ".$id.";";
+			$res = ejecuta($query_doctype);
+			$row_doctype = $res->fetch_assoc();
 
-			// foreach($_FILES as $file){
-			foreach(array_combine($id_doctype, $_FILES) as $id => $file){
-				//UPLOAD FILE
+			$name_input = "doc".$row_doctype['DOC']."-";
+
+			// TEXTO
+			if($row_doctype['DOC'] == '1'){
+				$content = $_POST[$name_input.$id];
+
+				$query = "INSERT INTO DOCUMENTS_RMA 
+				(SECURE_TITLE, TITLE, EXTENSION, DOC_TYPE)
+				VALUES(substr(sha(UUID()) from 1 for 10), '".$content."', 'TEXT',".$id.");";
+				$result = ejecuta($query) or die('La insercion fallo: ' . pg_last_error()); 
+
+				array_push($id_documents,intval(insert_id())); //Guardo el id para luego
+			}
+			else{//	IMAGENES O DOCUMENTOS
+				$name = $name_input.$id;	
+
 				// -Get uploaded file's extension
-				$ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+				$ext = strtolower(pathinfo($_FILES[$name]['name'], PATHINFO_EXTENSION));
 
 				//QUERY DATABASE
 				$query = "INSERT INTO DOCUMENTS_RMA 
 				(SECURE_TITLE, TITLE, EXTENSION, DOC_TYPE)
-				VALUES(substr(sha(UUID()) from 1 for 10), '".basename($file['name'])."', '".$ext."',".$id.");";
+				VALUES(substr(sha(UUID()) from 1 for 10), '".basename($_FILES[$name]['name'])."', '".$ext."',".$id.");";
 				$result = ejecuta($query) or die('La insercion fallo: ' . pg_last_error());
 				
 				// -Obtengo el nombre del documento seguro
@@ -159,7 +165,7 @@ else{
 
 				if(in_array($ext, $valid_extensions)) 
 				{ 
-					if(move_uploaded_file($file['tmp_name'], $uploadfile_secure)) 
+					if(move_uploaded_file($_FILES[$name]['tmp_name'], $uploadfile_secure)) 
 					{
 						$file_upload +=1;
 					}
@@ -168,40 +174,38 @@ else{
 					echo 'INVALID FILE';
 				}
 			}
+			
+		}
+		
+		// -Comprueba que todos los ficheros se han subido correctamente
+		if( count($_FILES) == $file_upload ){
 
-			// -Comprueba que todos los ficheros se han subido correctamente
-			if( count($_FILES) == $file_upload ){
+			// -Si se suben los ficheros correctamente inserto la incidencia
+			$query = "INSERT INTO INCIDENT
+			(FECHA_INCIDENTE, PRODUCTO, TIPOLOGIA, STATUS, CLIENTE)
+			VALUES('".date("d/m/y")."', '1', '".$incident_type."', 'ABIERTO', '1');";
+			$result = ejecuta($query) or die('La insercion INCIDENT fallo: ' . pg_last_error());
+			$id_incidencia = intval(insert_id());
 
-				// -Si se suben los ficheros correctamente inserto la incidencia
-				$query = "INSERT INTO INCIDENT
-				(FECHA_INCIDENTE, PRODUCTO, TIPOLOGIA, STATUS, CLIENTE)
-				VALUES('".date("d/m/y")."', '1', '".$incident_type."', 'ABIERTO', '1');";
-				$result = ejecuta($query) or die('La insercion INCIDENT fallo: ' . pg_last_error());
-				$id_incidencia = intval(insert_id());
-
-				// -Asocio la documentacion con la incidencia insertada
-				$values = "";
-				foreach ($id_documents as $id) {
-					$values .= "(".$id_incidencia.",".$id."),";
-				}
-				$values = rtrim($values, ",");
-
-				$query = "INSERT INTO INCIDENT_DOC
-				(FK_INCIDENT, FK_DOC) VALUES".$values .";";
-				$result = ejecuta($query) or die('La insercion INC_DOC fallo: ' . pg_last_error());
-
-				// -Nuevo chat
-				$query = "INSERT INTO CHAT_INCIDENT (FK_INCIDENT) VALUES(".$id_incidencia.");";
-				ejecuta($query);
-
-				echo "OK";
-			}else{
-				echo 'ERROR';
+			// -Asocio la documentacion con la incidencia insertada
+			$values = "";
+			foreach ($id_documents as $id) {
+				$values .= "(".$id_incidencia.",".$id."),";
 			}
+			$values = rtrim($values, ",");
+
+			$query = "INSERT INTO INCIDENT_DOC
+			(FK_INCIDENT, FK_DOC) VALUES".$values .";";
+			$result = ejecuta($query) or die('La insercion INC_DOC fallo: ' . pg_last_error());
+
+			// -Nuevo chat
+			$query = "INSERT INTO CHAT_INCIDENT (FK_INCIDENT) VALUES(".$id_incidencia.");";
+			ejecuta($query);
+
+			echo "OK";
 		}else{
 			echo 'ERROR';
 		}
-
 	}
 	
 	if( $_POST['op'] == "detalle_rma" ){
